@@ -38,7 +38,7 @@ If you find this code useful in your research, please consider citing us:
 
 ```
 @inproceedings{ML_GCN_CVPR_2019,
-author = {Zhao-Min, Chen and Xiu-Shen, Wei and Peng, Wang and YanWen, Guo},
+author = {Zhao-Min, Chen and Xiu-Shen, Wei and Peng, Wang and Yanwen, Guo},
 title = {{Multi-Label Image Recognition with Graph Convolutional Networks}},
 booktitle = {The IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
 year = {2019}
