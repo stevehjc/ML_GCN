@@ -4,9 +4,13 @@ from models import *
 from voc import *
 
 parser = argparse.ArgumentParser(description='WILDCAT Training')
-parser.add_argument('data', metavar='DIR',
+parser.add_argument('--data', metavar='DIR',
+                    default='data/voc',
                     help='path to dataset (e.g. data/')
-parser.add_argument('--image-size', '-i', default=224, type=int,
+parser.add_argument('--image-size', '-i',
+                    # default=224,
+                    default=448,
+                    type=int,
                     metavar='N', help='image size (default: 224)')
 parser.add_argument('-j', '--workers', default=4, type=int, metavar='N',
                     help='number of data loading workers (default: 4)')
@@ -16,7 +20,9 @@ parser.add_argument('--epoch_step', default=[30], type=int, nargs='+',
                     help='number of epochs to change learning rate')
 parser.add_argument('--start-epoch', default=0, type=int, metavar='N',
                     help='manual epoch number (useful on restarts)')
-parser.add_argument('-b', '--batch-size', default=16, type=int,
+parser.add_argument('-b', '--batch-size',
+                    default=16, #16
+                    type=int,
                     metavar='N', help='mini-batch size (default: 256)')
 parser.add_argument('--lr', '--learning-rate', default=0.1, type=float,
                     metavar='LR', help='initial learning rate')
@@ -26,11 +32,14 @@ parser.add_argument('--momentum', default=0.9, type=float, metavar='M',
                     help='momentum')
 parser.add_argument('--weight-decay', '--wd', default=1e-4, type=float,
                     metavar='W', help='weight decay (default: 1e-4)')
-parser.add_argument('--print-freq', '-p', default=0, type=int,
+parser.add_argument('--print-freq', '-p', default=10, type=int,
                     metavar='N', help='print frequency (default: 10)')
-parser.add_argument('--resume', default='', type=str, metavar='PATH',
+parser.add_argument('--resume',
+                    default='checkpoint/voc/voc_checkpoint.pth.tar',
+                    type=str, metavar='PATH',
                     help='path to latest checkpoint (default: none)')
 parser.add_argument('-e', '--evaluate', dest='evaluate', action='store_true',
+                    default=True,
                     help='evaluate model on validation set')
 
 
@@ -64,6 +73,7 @@ def main_voc2007():
     state['workers'] = args.workers
     state['epoch_step'] = args.epoch_step
     state['lr'] = args.lr
+    state['print_freq']=args.print_freq
     if args.evaluate:
         state['evaluate'] = True
     engine = GCNMultiLabelMAPEngine(state)

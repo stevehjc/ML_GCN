@@ -104,15 +104,21 @@ class Engine(object):
 
     def on_forward(self, training, model, criterion, data_loader, optimizer=None, display=True):
 
-        input_var = torch.autograd.Variable(self.state['input'])
-        target_var = torch.autograd.Variable(self.state['target'])
+        # input_var = torch.autograd.Variable(self.state['input'])
+        # target_var = torch.autograd.Variable(self.state['target'])
+        input_var =self.state['input']
+        target_var = self.state['target']
 
-        if not training:
-            input_var.volatile = True
-            target_var.volatile = True
+        # if not training:
+        #     input_var.volatile = True
+        #     target_var.volatile = True
 
         # compute output
-        self.state['output'] = model(input_var)
+        if not training:
+            with torch.no_grad():
+                self.state['output'] = model(input_var)
+        else:
+            self.state['output'] = model(input_var)
         self.state['loss'] = criterion(self.state['output'], target_var)
 
         if training:
@@ -184,8 +190,8 @@ class Engine(object):
             cudnn.benchmark = True
 
 
-            model = torch.nn.DataParallel(model, device_ids=self.state['device_ids']).cuda()
-
+            # model = torch.nn.DataParallel(model, device_ids=self.state['device_ids']).cuda()
+            model = model.cuda()
 
             criterion = criterion.cuda()
 
@@ -408,16 +414,28 @@ class MultiLabelMAPEngine(Engine):
 
 class GCNMultiLabelMAPEngine(MultiLabelMAPEngine):
     def on_forward(self, training, model, criterion, data_loader, optimizer=None, display=True):
-        feature_var = torch.autograd.Variable(self.state['feature']).float()
-        target_var = torch.autograd.Variable(self.state['target']).float()
-        inp_var = torch.autograd.Variable(self.state['input']).float().detach()  # one hot
-        if not training:
-            feature_var.volatile = True
-            target_var.volatile = True
-            inp_var.volatile = True
+        # feature_var = torch.autograd.Variable(self.state['feature']).float()
+        # target_var = torch.autograd.Variable(self.state['target']).float()
+        # inp_var = torch.autograd.Variable(self.state['input']).float().detach()  # one hot
+        # if not training:
+        #     feature_var.volatile = True
+        #     target_var.volatile = True
+        #     inp_var.volatile = True
+        feature_var = self.state['feature'].float()
+        target_var = self.state['target'].float()
+        inp_var = self.state['input'].float().detach()  # one hot
 
+        if self.state['use_gpu']:
+            feature_var=feature_var.cuda()
+            target_var=target_var.cuda()
+            inp_var=inp_var.cuda()
         # compute output
-        self.state['output'] = model(feature_var, inp_var)
+        if not training:
+            with torch.no_grad():
+                self.state['output'] = model(feature_var, inp_var)
+        else:
+            self.state['output'] = model(feature_var, inp_var)
+
         self.state['loss'] = criterion(self.state['output'], target_var)
 
         if training:

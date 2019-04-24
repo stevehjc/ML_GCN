@@ -1,10 +1,14 @@
 # ML_GCN.pytorch
 PyTorch implementation of [Multi-Label Image Recognition with Graph Convolutional Networks](https://arxiv.org/abs/1904.03582), CVPR 2019.
 
+### Updates
+24/04/2019
+- add pytorch 0.4.1
+
 ### Requirements
 Please, install the following packages
 - numpy
-- torch-0.3.1
+- torch-0.4.1
 - torchnet
 - torchvision-0.2.0
 - tqdm
